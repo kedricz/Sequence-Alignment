@@ -1,11 +1,15 @@
-====================
-Sequence Alignment
-====================
+=============================================
+Pairwise Optimal Sequence Alignment
+=============================================
 
-* NetBeans IDE 7.4 was used to build this program.
-* This is a GUI. The window will appear when you run it. 
-* Note: DNA sequences should be all upper-case.
+This program uses the dynamic programming based sequence alignment algorithm, with the following three variations: global alignment, local alignment, and global alignment with affine gap penalties.
+
+This takes O(n^2) time to construct the matrix and linear time to extract the optimal alignment from the matrix constructed. The alignment problems are only for DNA sequences.
 
 
-================================================================
-Please let me know if you find trouble running the project.
+Sample Input & Output
+
+Input: ACCTG and CACTG
+
+Output: GC_CTG
+        _CACTG
