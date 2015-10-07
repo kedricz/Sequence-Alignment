@@ -1,38 +1,56 @@
-
 package sa;
 
-
-public class SAmethod {
+/**
+ *  Pairwise Optimal Sequence Alignment
+ *
+ *  This program uses the dynamic programming based sequence alignment algorithm, 
+ *   with the following three variations: global alignment, local alignment, and global alignment 
+ *   with affine gap penalties.
+ *
+ *  This takes O(n^2) time to construct the matrix and 
+ *   linear time to extract the optimal alignment from the matrix constructed. 
+ *   The alignment problems are only for DNA sequences.
+ *  
+ *  @version 1.0 03 March 2014
+ *  @author Cedric Jo
+ */
+public class SeqAlignMethod {
+    
+    /** String for global alignment output */
     public StringBuilder g;
+    
+    /** String for local alignment output */
     public StringBuilder l;
+    
+    /** String for global alignment with affine penalty output */
     public StringBuilder af;
     
-  
     
-    /*  Global sequence alignment
-     *  Returns aligned DNA sequences
-     *  s1 = score for perfect match
-     *  s2 = score for same base substitution
-     *  s3 = score for other substitution
-     *  p1 = gap penalty
-     *  sq1, sq2 = DNA sequences
+    /** 
+     *  Global sequence alignment function
+     *  
+     *    Returns global aligned DNA sequences (string)
+     *    Parameters:
+     *      s1 = score for perfect match
+     *      s2 = score for same base substitution
+     *      s3 = score for other substitution
+     *      p1 = gap penalty
+     *      sq1, sq2 = DNA sequences
      */
     public String global(int s1, int s2, int s3, int p1, String sq1, String sq2) {
         int[][] gOpt = new int[sq2.length()+1][sq1.length()+1];
         int gap = -1*Math.abs(p1);
         Integer a = null;
         
-        // Filling first row & column
-        for (int i=1; i <= sq2.length(); i++) 
-        {
+        /* Filling first row & column */
+        for (int i=1; i <= sq2.length(); i++) {
             gOpt[i][0] = gOpt[i-1][0] + gap;
         }
-        for (int j=1; j <= sq1.length(); j++)
-        {
+        for (int j=1; j <= sq1.length(); j++) {
             gOpt[0][j] = gOpt[0][j-1] + gap;
         }
         
-        // Filling rest of the matrix
+        /* Filling rest of the matrix */
         for (int i=1; i <= sq2.length(); i++)
         {
             for (int j=1; j <= sq1.length(); j++)

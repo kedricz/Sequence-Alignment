@@ -1,25 +1,52 @@
-/*  File: SAUI.java
- *  Name: Cedric Jo
- *  Date: 03/03/2014
- * 
- */
-
 package sa;
 
 import javax.swing.*;
 
-
-public class SAUI extends javax.swing.JFrame {
-    SAmethod method = new SAmethod();
+/**
+ *  Pairwise Optimal Sequence Alignment
+ *
+ *  This program uses the dynamic programming based sequence alignment algorithm, 
+ *   with the following three variations: global alignment, local alignment, and global alignment 
+ *   with affine gap penalties.
+ *
+ *  This takes O(n^2) time to construct the matrix and 
+ *   linear time to extract the optimal alignment from the matrix constructed. 
+ *   The alignment problems are only for DNA sequences.
+ *  
+ *  @version 1.0 03 March 2014
+ *  @author Cedric Jo
+ */
+public class SeqAlignUI extends javax.swing.JFrame {
+    SeqAlignMethod method = new SeqAlignMethod();
+    
+    /** 
+     * Boolean values to check 
+     *  if output is set to either global alignment, local alignment, 
+     *  or global alignment with affine gap penalties.
+     */
     private boolean global;
     private boolean local;
     private boolean affine;
     
     
-    public SAUI() {
+    public SeqAlignUI() {
         initComponents();
     }
 
+    /**
+     * s1 = score for a perfect match
+     * s2 = score for a Purine-Purine or Pyrimidine-Pyrimidine substitution
+     * s3 = score for a Purine-Pyrimidine or Pyrimidine-Purine substitution
+     * 
+     * p1 = gap penalty
+     * p2 = affine gap introduction penalty
+     * p3 = additional affine gap penalty
+     * 
+     * dna1 = first DNA sequence
+     * dna2 = second DNA sequence
+     */
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -379,7 +406,7 @@ public class SAUI extends javax.swing.JFrame {
                             .addComponent(penaltyjPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(resultjPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(alignjPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(excutejPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))))
+                            .addComponent(excutejPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 281, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -408,12 +435,15 @@ public class SAUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     
-    
+    /** A button to exit the program */
     private void exitjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitjButtonActionPerformed
         System.exit(0);
     }//GEN-LAST:event_exitjButtonActionPerformed
 
+    /** A button to clear all text box */
     private void clearjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearjButtonActionPerformed
+        
+        /**  Initialize text field with blank */ 
         p1jTextField.setText("");
         p2jTextField.setText("");
         p3jTextField.setText("");
@@ -425,7 +455,10 @@ public class SAUI extends javax.swing.JFrame {
         resultjTextArea.setText("");
     }//GEN-LAST:event_clearjButtonActionPerformed
 
+    /** Run button to execute the program */
     private void runjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runjButtonActionPerformed
+        
+        /** Convert values in the text to integer and store in the int variables*/
         int s1 = Integer.parseInt(s1jTextField.getText());
         int s2 = Integer.parseInt(s2jTextField.getText());
         int s3 = Integer.parseInt(s3jTextField.getText());
@@ -434,11 +467,18 @@ public class SAUI extends javax.swing.JFrame {
         int p2 = Integer.parseInt(p2jTextField.getText());
         int p3 = Integer.parseInt(p3jTextField.getText());
         
+        /** Store DNA sequence to the String variable */
         String sq1 = dna1jTextField.getText();
         String sq2 = dna2jTextField.getText();
         
-        /*-----------------------------------------------------------------*/
-        // Error Message when input is invalid
+        
+        /*----------------------------------------------------------------------------*/
+        /************************* Error Checking *************************************/
+        
+        /** 
+         * Error Message when input is invalid 
+         *  (if it is unable to convert to integer) 
+         */
         try {
             Integer.parseInt(s1jTextField.getText());
             Integer.parseInt(s2jTextField.getText());
@@ -446,65 +486,56 @@ public class SAUI extends javax.swing.JFrame {
             Integer.parseInt(p1jTextField.getText());
             Integer.parseInt(p2jTextField.getText());
             Integer.parseInt(p3jTextField.getText());
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "The input is invalid", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
         
-        if(Integer.parseInt(s1jTextField.getText()) < 0) 
-        {
+        /** Error check if score for perfect match is greater than 0 */
+        if(Integer.parseInt(s1jTextField.getText()) < 0)  {
                 JOptionPane.showMessageDialog(null, "The input is invalid", "Error", JOptionPane.ERROR_MESSAGE);  
         }
         
-        if (Integer.parseInt(s1jTextField.getText()) < Integer.parseInt(s2jTextField.getText()))
-        {
-            JOptionPane.showMessageDialog(null, "The input is invalid", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-        if (Integer.parseInt(s1jTextField.getText()) < Integer.parseInt(s2jTextField.getText()))
-        {
+        /** Error check if score for perfect match is larger than score for Purine-Purine subst */
+        if (Integer.parseInt(s1jTextField.getText()) < Integer.parseInt(s2jTextField.getText())) {
             JOptionPane.showMessageDialog(null, "The input is invalid", "Error", JOptionPane.ERROR_MESSAGE);
         }
         
-        if (Integer.parseInt(s2jTextField.getText()) < Integer.parseInt(s3jTextField.getText()))
-        {
-            JOptionPane.showMessageDialog(null, "The input is invalid", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-        if (Integer.parseInt(s2jTextField.getText()) < Integer.parseInt(s3jTextField.getText()))
-        {
+        /** Error check if score for perfect match is larger than score for Purine-Pyrimidine subst */
+        if (Integer.parseInt(s1jTextField.getText()) < Integer.parseInt(s3jTextField.getText())) {
             JOptionPane.showMessageDialog(null, "The input is invalid", "Error", JOptionPane.ERROR_MESSAGE);
         }
         
-        if (!sq1.matches("[ACGT]*"))
-        {
+        /** Error check if score for purine-purine match is larger than score for Purine-Pyrimidine subst */
+        if (Integer.parseInt(s2jTextField.getText()) < Integer.parseInt(s3jTextField.getText())) {
+            JOptionPane.showMessageDialog(null, "The input is invalid", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+        /** Error check if DNA sequences have valid alphabets (a,c,g,t) */
+        if (!sq1.matches("[ACGT]*")) {
             JOptionPane.showMessageDialog(null, "Invalid DNA sequence", "Error", JOptionPane.ERROR_MESSAGE);
         }
-        if (!sq2.matches("[ACGT]*"))
-        {
+        if (!sq2.matches("[ACGT]*")) {
             JOptionPane.showMessageDialog(null, "Invalid DNA sequence", "Error", JOptionPane.ERROR_MESSAGE);
         }
+        /*----------------------------------------------------------------------------*/
         
         
-        /*-----------------------------------------------------------------*/
-        // Methods for alignment
-        
-        if (global)
-        {
+     
+        /** Call a method depending on output setting */
+        if (global) {
             String globalResult = method.global(s1, s2, s3, p1, sq1, sq2);
             resultjTextArea.setText(globalResult);
             
             tablejTextArea.setText(method.g.toString());
         }
-        else if(local)
-        {
+        else if(local) {
             String localResult = method.local(s1, s2, s3, p1, sq1, sq2);
             resultjTextArea.setText(localResult);
             
             tablejTextArea.setText(method.l.toString());
         }
-        else if(affine)
-        {
+        else if(affine) {
             String affineResult = method.affine(s1, s2, s3, p2, p3, sq1, sq2);
             resultjTextArea.setText(affineResult);
             
@@ -512,6 +543,7 @@ public class SAUI extends javax.swing.JFrame {
         } 
     }//GEN-LAST:event_runjButtonActionPerformed
 
+    /** A button to set global alignment */
     private void globaljRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_globaljRadioButtonActionPerformed
         this.global = true;
         this.local = false;
@@ -520,6 +552,7 @@ public class SAUI extends javax.swing.JFrame {
         affinejRadioButton.setSelected(false);
     }//GEN-LAST:event_globaljRadioButtonActionPerformed
 
+    /** A button to set local alignment */
     private void localjRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_localjRadioButtonActionPerformed
         this.local = true;
         this.global = false;
@@ -528,6 +561,7 @@ public class SAUI extends javax.swing.JFrame {
         affinejRadioButton.setSelected(false);
     }//GEN-LAST:event_localjRadioButtonActionPerformed
 
+    /** A button to set global alignment with affine gap penalty */
     private void affinejRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_affinejRadioButtonActionPerformed
         this.affine = true;
         this.local = false;
@@ -536,6 +570,7 @@ public class SAUI extends javax.swing.JFrame {
         globaljRadioButton.setSelected(false);
     }//GEN-LAST:event_affinejRadioButtonActionPerformed
 
+    /**  */
     private void s1jTextFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_s1jTextFieldFocusLost
         try {
             Integer.parseInt(s1jTextField.getText());
@@ -627,20 +662,20 @@ public class SAUI extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(SAUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SeqAlignUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(SAUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SeqAlignUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(SAUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SeqAlignUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(SAUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SeqAlignUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new SAUI().setVisible(true);
+                new SeqAlignUI().setVisible(true);
             }
         });
     }
