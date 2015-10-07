@@ -7,9 +7,9 @@ This program uses the dynamic programming based sequence alignment algorithm, wi
 This takes O(n^2) time to construct the matrix and linear time to extract the optimal alignment from the matrix constructed. The alignment problems are only for DNA sequences.
 
 
-Sample Input & Output
+Sample Local Alginment Input & Output
 
 Input: ACCTG and CACTG
 
-Output: GC_CTG
-        _CACTG
+Output: CTG
+        CTG
