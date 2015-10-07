@@ -38,11 +38,17 @@ public class SeqAlignMethod {
      *      sq1, sq2 = DNA sequences
      */
     public String global(int s1, int s2, int s3, int p1, String sq1, String sq2) {
+        
+        /** matrix for dynamic programming */
         int[][] gOpt = new int[sq2.length()+1][sq1.length()+1];
+        
+        /** gap penalty */
         int gap = -1*Math.abs(p1);
+       
         Integer a = null;
         
-        /* Filling first row & column */
+        
+        /** Filling first row & column with gap penalty */
         for (int i=1; i <= sq2.length(); i++) {
             gOpt[i][0] = gOpt[i-1][0] + gap;
         }
@@ -50,35 +56,29 @@ public class SeqAlignMethod {
             gOpt[0][j] = gOpt[0][j-1] + gap;
         }
         
-        /* Filling rest of the matrix */
-        for (int i=1; i <= sq2.length(); i++)
-        {
-            for (int j=1; j <= sq1.length(); j++)
-            {
+        /** Filling the rest of the matrix */
+        for (int i=1; i <= sq2.length(); i++) {
+            for (int j=1; j <= sq1.length(); j++) {
+                
+                /** diagonal score */
                 int scoreDiag;
                 
-                if (sq2.charAt(i-1) == sq1.charAt(j-1))
-                {
+                if (sq2.charAt(i-1) == sq1.charAt(j-1)) {
                     scoreDiag = gOpt[i-1][j-1] + s1;
                 }
-                else if (sq2.charAt(i-1) == 'A' && sq1.charAt(j-1) == 'G')
-                {
+                else if (sq2.charAt(i-1) == 'A' && sq1.charAt(j-1) == 'G') {
                     scoreDiag = gOpt[i-1][j-1] + s2;
                 }
-                else if (sq2.charAt(i-1) == 'G' && sq1.charAt(j-1) == 'A')
-                {
+                else if (sq2.charAt(i-1) == 'G' && sq1.charAt(j-1) == 'A') {
                     scoreDiag = gOpt[i-1][j-1] + s2;
                 }
-                else if (sq2.charAt(i-1) == 'C' && sq1.charAt(j-1) == 'T')
-                {
+                else if (sq2.charAt(i-1) == 'C' && sq1.charAt(j-1) == 'T') {
                     scoreDiag = gOpt[i-1][j-1] + s2;
                 }
-                else if (sq2.charAt(i-1) == 'T' && sq1.charAt(j-1) == 'C')
-                {
+                else if (sq2.charAt(i-1) == 'T' && sq1.charAt(j-1) == 'C') {
                     scoreDiag = gOpt[i-1][j-1] + s2;
                 }
-                else
-                {
+                else {
                     scoreDiag = gOpt[i-1][j-1] + s3;
                 }
                 
@@ -89,8 +89,8 @@ public class SeqAlignMethod {
             }
         }
         
-        /*-------------------------------------------------*/
-        // Print Global alignment table        
+        /*-----------------------------------------------------------------*/
+        /** Print Global alignment table */  
           g = new StringBuilder("");
           g.append("\t" + "  -" + "\t");
           for (int i=0; i <= sq2.length(); i++) 
@@ -132,57 +132,51 @@ public class SeqAlignMethod {
     
     
     
-    /*  Local sequence alignment
-     *  Returns aligned DNA substrings
-     *  s1 = score for perfect match
-     *  s2 = score for same base substitution
-     *  s3 = score for other substitution
-     *  p1 = gap penalty
-     *  sq1, sq2 = DNA sequences
+    /**  
+     *  Local sequence alignment
+     *    
+     *    Returns aligned DNA substrings
+     *    parameters:
+     *      s1 = score for perfect match
+     *      s2 = score for same base substitution
+     *      s3 = score for other substitution
+     *      p1 = gap penalty
+     *      sq1, sq2 = DNA sequences
      */
     public String local(int s1, int s2, int s3, int p1, String sq1, String sq2) {
         int[][] lOpt = new int[sq2.length()+1][sq1.length()+1];
         int gap = -1*Math.abs(p1);
         
-        // Filling first row & column with 0
-        for (int i=1; i <= sq2.length(); i++) 
-        {
+       
+        /** Filling first row & column with 0 */
+        for (int i=1; i <= sq2.length(); i++) {
             lOpt[i][0] = 0;
         }
-        for (int j=1; j <= sq1.length(); j++)
-        {
+        for (int j=1; j <= sq1.length(); j++) {
             lOpt[0][j] = 0;
         }
         
-        // Filling rest of the matrix
-        for (int i=1; i <= sq2.length(); i++)
-        {
-            for (int j=1; j <= sq1.length(); j++)
-            {
+        /** Filling rest of the matrix */
+        for (int i=1; i <= sq2.length(); i++) {
+            for (int j=1; j <= sq1.length(); j++) {
                 int scoreDiag;
                 
-                if (sq2.charAt(i-1) == sq1.charAt(j-1))
-                {
+                if (sq2.charAt(i-1) == sq1.charAt(j-1)) {
                     scoreDiag = lOpt[i-1][j-1] + s1;
                 }
-                else if (sq2.charAt(i-1) == 'A' && sq1.charAt(j-1) == 'G')
-                {
+                else if (sq2.charAt(i-1) == 'A' && sq1.charAt(j-1) == 'G') {
                     scoreDiag = lOpt[i-1][j-1] + s2;
                 }
-                else if (sq2.charAt(i-1) == 'G' && sq1.charAt(j-1) == 'A')
-                {
+                else if (sq2.charAt(i-1) == 'G' && sq1.charAt(j-1) == 'A') {
                     scoreDiag = lOpt[i-1][j-1] + s2;
                 }
-                else if (sq2.charAt(i-1) == 'C' && sq1.charAt(j-1) == 'T')
-                {
+                else if (sq2.charAt(i-1) == 'C' && sq1.charAt(j-1) == 'T') {
                     scoreDiag = lOpt[i-1][j-1] + s2;
                 }
-                else if (sq2.charAt(i-1) == 'T' && sq1.charAt(j-1) == 'C')
-                {
+                else if (sq2.charAt(i-1) == 'T' && sq1.charAt(j-1) == 'C') {
                     scoreDiag = lOpt[i-1][j-1] + s2;
                 }
-                else
-                {
+                else {
                     scoreDiag = lOpt[i-1][j-1] + s3;
                 }
                 
@@ -190,8 +184,7 @@ public class SeqAlignMethod {
                 int scoreUp = lOpt[i-1][j] + gap;
                 
                 int max = Math.max(Math.max(scoreDiag, scoreLeft), scoreUp);
-                    if (max < 0)
-                    {
+                    if (max < 0) {
                        lOpt[i][j] = 0;
                     }
                     else {
@@ -200,14 +193,12 @@ public class SeqAlignMethod {
             }
         }
         
-        // Print local alignment score table
+          // Print local alignment score table
           l = new StringBuilder("");
           l.append("\t" + "  -" + "\t");
-          for (int i=0; i <= sq2.length(); i++) 
-          {
+          for (int i=0; i <= sq2.length(); i++) {
               if (i==0) {
-                for (int j=0; j < sq1.length(); j++)
-                {
+                for (int j=0; j < sq1.length(); j++) {
                     l.append("  " + sq1.charAt(j) + "\t");
                 }
                 l.append("\n");}
@@ -216,16 +207,13 @@ public class SeqAlignMethod {
               if (i==0) {
                       l.append("-" + "\t");
                   }
-              for (int j=0; j <= sq1.length(); j++)
-              {
-                  if(i >= 1 && j==0)
-                  {
+              for (int j=0; j <= sq1.length(); j++) {
+                  if(i >= 1 && j==0) {
                       l.append(sq2.charAt(i-1) + "\t");
                   }
                   
                   
-                  if (lOpt[i][j] >= 0)
-                  {
+                  if (lOpt[i][j] >= 0) {
                       l.append("  " + lOpt[i][j] + "\t");
                   }
                   else {
@@ -234,27 +222,25 @@ public class SeqAlignMethod {
               }
               l.append("\n");
           } 
+          
         /*-----------------------------------------------------*/
-        // Finding optimal score for local alignment
+        /** Finding optimal score for local alignment */
         
-        // Find location of max score
+        /** Find location of max score */
         int tmpI = 0;
         int tmpJ = 0;
         int max = lOpt[0][0];
-        for (int i=0; i <= sq2.length(); i++)
-        {
+        for (int i=0; i <= sq2.length(); i++) {
             int[] inner = lOpt[i];
-            for (int j=0; j <= sq1.length(); j++)
-            {
-                if(inner[j] > max)
-                {
+            for (int j=0; j <= sq1.length(); j++) {
+                if(inner[j] > max) {
                     max = inner[j];
                     tmpI = i; tmpJ = j;
                 }
             }
         }
 
-        /* -------------------------------------------*/
+        /* --------------------------------------------------------------------*/
         // TraceBack from the max score
         String finals1 = "";
         String finals2 = "";
@@ -263,12 +249,10 @@ public class SeqAlignMethod {
         char ch1 = ' ';
         char ch2 = ' ';
         
-        for (int i=tmpI, j=tmpJ; i >= 0 || j >= 0;)
-        {
+        for (int i=tmpI, j=tmpJ; i >= 0 || j >= 0;) {
             int cur = lOpt[i][j];
    
-            if (cur==0)
-            {
+            if (cur==0) {
                 break;
             }
             
@@ -277,9 +261,8 @@ public class SeqAlignMethod {
             int dia = lOpt[i-1][j-1];
             int up = lOpt[i-1][j];
 
-            // Diagonal
-            if (sq2.charAt(i-1) == sq1.charAt(j-1))
-            {
+            /** Diagonal */
+            if (sq2.charAt(i-1) == sq1.charAt(j-1)) {
                 ch1 = sq1.charAt(j-1);
                 ch2 = sq2.charAt(i-1);
 
@@ -288,8 +271,7 @@ public class SeqAlignMethod {
                 i--;
                 j--;
             }
-            else if ((sq2.charAt(i-1) == 'A' && sq1.charAt(j-1) == 'G') && dia==cur-s2)
-            {
+            else if ((sq2.charAt(i-1) == 'A' && sq1.charAt(j-1) == 'G') && dia==cur-s2) {
                 ch1 = sq1.charAt(j-1);
                 ch2 = sq2.charAt(i-1);
 
@@ -298,8 +280,7 @@ public class SeqAlignMethod {
                 i--;
                 j--;
             }
-            else if ((sq2.charAt(i-1) == 'G' && sq1.charAt(j-1) == 'A') && dia==cur-s2)
-            {
+            else if ((sq2.charAt(i-1) == 'G' && sq1.charAt(j-1) == 'A') && dia==cur-s2) {
                 ch1 = sq1.charAt(j-1);
                 ch2 = sq2.charAt(i-1);
 
@@ -308,8 +289,7 @@ public class SeqAlignMethod {
                 i--;
                 j--;
             }
-            else if ((sq2.charAt(i-1) == 'C' && sq1.charAt(j-1) == 'T') && dia==cur-s2)
-            {
+            else if ((sq2.charAt(i-1) == 'C' && sq1.charAt(j-1) == 'T') && dia==cur-s2) {
                 ch1 = sq1.charAt(j-1);
                 ch2 = sq2.charAt(i-1);
 
@@ -318,8 +298,7 @@ public class SeqAlignMethod {
                 i--;
                 j--;
             }
-            else if ((sq2.charAt(i-1) == 'T' && sq1.charAt(j-1) == 'C') && dia==cur-s2)
-            {
+            else if ((sq2.charAt(i-1) == 'T' && sq1.charAt(j-1) == 'C') && dia==cur-s2) {
                 ch1 = sq1.charAt(j-1);
                 ch2 = sq2.charAt(i-1);
 
@@ -328,8 +307,7 @@ public class SeqAlignMethod {
                 i--;
                 j--;
             }
-            else if (cur-s3 == dia)
-            {
+            else if (cur-s3 == dia) {
                 ch1 = sq1.charAt(j-1);
                 ch2 = sq2.charAt(i-1);
 
@@ -339,9 +317,8 @@ public class SeqAlignMethod {
                 j--;
             }
             
-            // Up
-            else if (cur-gap == up)
-            {
+            /** Up */
+            else if (cur-gap == up) {
                 ch2 = sq2.charAt(i-1);
                 ch1 = '-';
 
@@ -350,7 +327,7 @@ public class SeqAlignMethod {
                 i--;
             }
                        
-            // Left
+            /** Left */
             else // (cur-p1 == left)
             {
                 ch1 = sq1.charAt(j-1); 
@@ -372,15 +349,18 @@ public class SeqAlignMethod {
     
     
     
-    /*  Affine global sequence alignment
-     *  Returns aligned DNA sequences
-     *  s1 = score for perfect match
-     *  s2 = score for same base substitution
-     *  s3 = score for other substitution
-     *  p1 = gap penalty
-     *  p2 = affine gap penalty (introduction)
-     *  p3 = affine gap penalty (additional)
-     *  sq1, sq2 = DNA sequences
+    /**  
+     *  Affine global sequence alignment
+     *    Returns aligned DNA sequences
+     *  
+     *    Parameters:
+     *      s1 = score for perfect match
+     *      s2 = score for same base substitution
+     *      s3 = score for other substitution
+     *      p1 = gap penalty
+     *      p2 = affine gap penalty (introduction)
+     *      p3 = affine gap penalty (additional)
+     *      sq1, sq2 = DNA sequences
      */
     public String affine(int s1, int s2, int s3, int p2, int p3, String sq1, String sq2) {
         int[][] afOpt = new int[sq2.length()+1][sq1.length()+1];    // max score table
@@ -508,13 +488,19 @@ public class SeqAlignMethod {
         return TracebackA(afOpt, diaOpt, leftOpt, upOpt, sq1, sq2, a, b, s1, s2, s3);
     }    
         
+    
+    
+    
    
     
     
-    /*  Traceback global alignment
-     *  Returns aligned DNA sequences
-     *  a = score table maxtrix
-     *  sq1, sq2 = DNA sequences 
+    /**  
+     *  Traceback global alignment
+     *    Returns aligned DNA sequences
+     *  
+     *    parameters:
+     *      a = score table matrix
+     *      sq1, sq2 = DNA sequences 
      */
     public String Traceback(int[][] a, String sq1, String sq2, int p1, int s1, int s2, int s3)
     {
@@ -653,10 +639,13 @@ public class SeqAlignMethod {
     
     
     
-    /*  Traceback affine global alignment
-     *  Returns aligned DNA sequences
-     *  a = score table maxtrix
-     *  sq1, sq2 = DNA sequences 
+    /**  
+     *  Traceback affine global alignment
+     *    
+     *    Returns aligned DNA sequences
+     *    Parameters:
+     *      a = score table maxtrix
+     *      sq1, sq2 = DNA sequences 
      */
     public String TracebackA(int[][] affT, int[][] diaT, int[][] leftT, int[][] upT, String sq1, String sq2, int a, int b, int s1, int s2, int s3)
     {
